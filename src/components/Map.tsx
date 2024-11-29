@@ -26,13 +26,11 @@ const Map: React.FC = () => {
             longitude: position.coords.longitude,
           });
         },
-        (err) => {
-          console.log("Failed to retrieve location: " + err.message);
+        () => {
           setLocation(defaultLocation);
         }
       );
     } else {
-      console.log("Geolocation is not supported by this browser.");
       setLocation(defaultLocation);
     }
   }, [hasMounted]);

@@ -2,13 +2,12 @@
 
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setUsername, setPassword, setToken } from "../../redux/userSlice";
+import { setUsername, setPassword } from "../../redux/userSlice";
 import type { FormProps } from "antd";
 import { Button, Checkbox, Form, Input } from "antd";
 import { useRouter } from "next/navigation";
 import type { RootState } from "../../redux/store.ts";
-import { login } from "../api/auth";
-import { toast } from "react-toastify";
+import { register } from "../api/auth";
 
 type FieldType = {
   username?: string;
@@ -24,28 +23,19 @@ const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
   console.log("Failed:", errorInfo);
 };
 
-const LoginPage: React.FC = () => {
+const RegisterPage: React.FC = () => {
   const router = useRouter();
-
-  const dispatch = useDispatch();
-  const { username, password } = useSelector((state: RootState) => state.user);
+  const handleLoginCLick = () => {
+    router.push("/login");
+  };
 
   const handleRegisterClick = () => {
-    router.push("/register");
+    register({ username, password });
   };
 
-  const handleLoginClick = () => {
-    const token = btoa(`${username}:${password}`);
-    login(token)
-      .then((data) => {
-        dispatch(setToken(data.token));
-      })
-      .catch((error) => {
-        const errorMessage =
-          error instanceof Error ? error.message : "An unknown error occurred";
-        toast.error(errorMessage);
-      });
-  };
+  const dispatch = useDispatch();
+
+  const { username, password } = useSelector((state: RootState) => state.user);
 
   return (
     <div
@@ -101,20 +91,20 @@ const LoginPage: React.FC = () => {
             }}
           >
             <Button
-              onClick={handleRegisterClick}
+              onClick={handleLoginCLick}
               type="text"
               size="middle"
               style={{ padding: "5px 15px" }}
             >
-              Crear cuenta
+              Loggear
             </Button>
             <Button
+              onClick={handleRegisterClick}
               type="primary"
               htmlType="submit"
               style={{ padding: "5px 15px" }}
-              onClick={handleLoginClick}
             >
-              Loggear
+              Registrar
             </Button>
           </div>
         </Form.Item>
@@ -123,4 +113,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
