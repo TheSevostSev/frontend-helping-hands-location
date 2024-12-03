@@ -5,6 +5,8 @@ import { Button, Form, Input, Select, Divider } from "antd";
 import { useRouter } from "next/navigation";
 import { register } from "../api/auth";
 import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
+import { getListUserTypes } from "../api/type";
 
 type UserRegisterType = {
   username?: string;
@@ -16,15 +18,27 @@ type UserRegisterType = {
   phoneNumber?: string | null;
 };
 
+type UserType = {
+  id: number;
+  name: string;
+};
+
+const { Option } = Select;
+
 const RegisterPage: React.FC = () => {
   const router = useRouter();
-  const [selectOpen, setSelectOpen] = useState(false);
 
   const [user, setUser] = useState<UserRegisterType | null>(null);
 
   const handleLoginCLick = () => {
     router.push("/login");
   };
+
+  const { data: userTypes } = useQuery({
+    queryFn: getListUserTypes,
+    queryKey: ["user_types"],
+    staleTime: 1000 * 60 * 5,
+  });
 
   const setUserWithPredifinedDataPosition = (
     username = user?.username,
@@ -47,13 +61,16 @@ const RegisterPage: React.FC = () => {
   };
 
   const handleRegisterClick = () => {
-    register(user);
-    toast.success("El usuario se ha registrado con exito");
-    router.push("/");
-  };
-
-  const handleSelectDropdownChange = (open: boolean) => {
-    setSelectOpen(open);
+    register(user)
+      .then(() => {
+        toast.success("El usuario se ha registrado con exito");
+        router.push("/");
+      })
+      .catch((error) => {
+        const errorMessage =
+          error instanceof Error ? error.message : "An unknown error occurred";
+        toast.error(errorMessage);
+      });
   };
 
   return (
@@ -159,6 +176,37 @@ const RegisterPage: React.FC = () => {
             />
           </Form.Item>
 
+          <Form.Item<UserRegisterType>
+            label="Type"
+            name="typeId"
+            rules={[
+              { required: true, message: "Por favor pon tu tipo de usuario!" },
+            ]}
+          >
+            <Select
+              style={{ width: 120 }}
+              allowClear
+              onChange={(e) =>
+                setUserWithPredifinedDataPosition(
+                  user?.username,
+                  user?.password,
+                  Number(e),
+                  user?.firstName,
+                  user?.lastName,
+                  user?.email,
+                  user?.phoneNumber
+                )
+              }
+              placeholder="Elige tu tipo de usuario"
+            >
+              {userTypes?.map((item: UserType) => (
+                <Option key={item.id} value={item.id}>
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
           <Divider style={{ borderColor: "#000000" }}>
             Contact information
           </Divider>
@@ -199,44 +247,13 @@ const RegisterPage: React.FC = () => {
             />
           </Form.Item>
 
-          <Form.Item<UserRegisterType>
-            label="Type"
-            name="typeId"
-            rules={[
-              { required: true, message: "Por favor pon tu tipo de usuario!" },
-            ]}
-          >
-            <Select
-              defaultValue="lucy"
-              style={{ width: 120 }}
-              allowClear
-              onChange={(e) =>
-                setUserWithPredifinedDataPosition(
-                  user?.username,
-                  user?.password,
-                  Number(e),
-                  user?.firstName,
-                  user?.lastName,
-                  user?.email,
-                  user?.phoneNumber
-                )
-              }
-              options={[
-                { value: "1", label: "Personal" },
-                { value: "2", label: "Empresario" },
-              ]}
-              placeholder="Elige tu tipo de usuario"
-              onDropdownVisibleChange={handleSelectDropdownChange}
-            />
-          </Form.Item>
-
           <Form.Item label={null}>
             <div
               style={{
                 display: "flex",
                 gap: "8px",
                 justifyContent: "flex-start",
-                marginTop: selectOpen ? "40px" : "0px",
+                marginTop: "20px",
               }}
             >
               <Button

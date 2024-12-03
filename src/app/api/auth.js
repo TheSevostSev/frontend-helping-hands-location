@@ -22,6 +22,6 @@ export const register = async (user) => {
     const response = await backendURL.post("users/create", user);
     return response.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
