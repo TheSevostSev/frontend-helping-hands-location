@@ -1,44 +1,44 @@
 "use client";
 
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { setUsername, setPassword, setToken } from "../../redux/userSlice";
-import type { FormProps } from "antd";
+import React, { useState } from "react";
+
 import { Button, Checkbox, Form, Input } from "antd";
 import { useRouter } from "next/navigation";
-import type { RootState } from "../../redux/store.ts";
 import { login } from "../api/auth";
 import { toast } from "react-toastify";
+import useTokenStore from "@/stores/useTokenStore";
 
-type FieldType = {
+type UserLoginType = {
   username?: string;
   password?: string;
-  remember?: string;
-};
-
-const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-  console.log("Success:", values);
-};
-
-const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
-  console.log("Failed:", errorInfo);
+  remember: boolean;
 };
 
 const LoginPage: React.FC = () => {
   const router = useRouter();
+  const [user, setUser] = useState<UserLoginType | null>(null);
 
-  const dispatch = useDispatch();
-  const { username, password } = useSelector((state: RootState) => state.user);
+  const setToken = useTokenStore((state) => state.setToken);
+
+  const setUserWithPredifinedDataPosition = (
+    username = user?.username,
+    password = user?.password,
+    remember = false
+  ) => {
+    setUser({ username, password, remember });
+  };
 
   const handleRegisterClick = () => {
     router.push("/register");
   };
 
   const handleLoginClick = () => {
-    const token = btoa(`${username}:${password}`);
+    const token = btoa(`${user?.username}:${user?.password}`);
     login(token)
       .then((data) => {
-        dispatch(setToken(data.token));
+        setToken(data.token, user?.remember ? false : true);
+        toast.success("Se ha iniciado la session correctamente!");
+        router.push("/");
       })
       .catch((error) => {
         const errorMessage =
@@ -62,34 +62,56 @@ const LoginPage: React.FC = () => {
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
         initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <Form.Item<FieldType>
+        <Form.Item<UserLoginType>
           label="Username"
           name="username"
           rules={[{ required: true, message: "Please input your username!" }]}
         >
-          <Input onChange={(e) => dispatch(setUsername(e.target.value))} />
+          <Input
+            onChange={(e) =>
+              setUserWithPredifinedDataPosition(
+                e.target.value,
+                user?.password,
+                user?.remember
+              )
+            }
+          />
         </Form.Item>
 
-        <Form.Item<FieldType>
+        <Form.Item<UserLoginType>
           label="Password"
           name="password"
           rules={[{ required: true, message: "Please input your password!" }]}
         >
           <Input.Password
-            onChange={(e) => dispatch(setPassword(e.target.value))}
+            onChange={(e) =>
+              setUserWithPredifinedDataPosition(
+                user?.username,
+                e.target.value,
+                user?.remember
+              )
+            }
           />
         </Form.Item>
 
-        <Form.Item<FieldType>
+        <Form.Item<UserLoginType>
           name="remember"
           valuePropName="checked"
           label={null}
         >
-          <Checkbox>Remember me</Checkbox>
+          <Checkbox
+            onChange={(e) =>
+              setUserWithPredifinedDataPosition(
+                user?.username,
+                user?.password,
+                e.target.value
+              )
+            }
+          >
+            Remember me
+          </Checkbox>
         </Form.Item>
 
         <Form.Item label={null}>

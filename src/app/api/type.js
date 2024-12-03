@@ -1,17 +1,10 @@
 import { backendURL } from "./axios";
-export const list = async (token) => {
+
+export const getListUserTypes = async () => {
   try {
-    const response = await backendURL.post(
-      "login",
-      {},
-      {
-        headers: {
-          Authorization: `Basic ${token}`,
-        },
-      }
-    );
+    const response = await backendURL.get("login");
     return response.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };

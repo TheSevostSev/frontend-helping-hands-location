@@ -19,10 +19,7 @@ export const login = async (token) => {
 
 export const register = async (user) => {
   try {
-    const response = await backendURL.post("users/create", {
-      ...user,
-      typeId: 1,
-    });
+    const response = await backendURL.post("users/create", user);
     return response.data;
   } catch (error) {
     return error;

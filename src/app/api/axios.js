@@ -1,10 +1,19 @@
 import axios from "axios";
+import useTokenStore from "@/stores/useTokenStore";
 
 export const backendURL = axios.create({
   baseURL: "http://localhost:8080/",
 });
 
-export const setAuth = async (token) => {
-  // backendURL.defaults.headers.common["Authorization"] = `Basic ${token}`;
-  backendURL.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-};
+backendURL.interceptors.request.use(
+  (config) => {
+    const token = useTokenStore.getState().token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
