@@ -1,115 +1,265 @@
 "use client";
 
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { setUsername, setPassword } from "../../redux/userSlice";
-import type { FormProps } from "antd";
-import { Button, Checkbox, Form, Input } from "antd";
+import React, { useState } from "react";
+import { Button, Form, Input, Select, Divider } from "antd";
 import { useRouter } from "next/navigation";
-import type { RootState } from "../../redux/store.ts";
 import { register } from "../api/auth";
+import { toast } from "react-toastify";
 
-type FieldType = {
+type UserRegisterType = {
   username?: string;
   password?: string;
-  remember?: string;
-};
-
-const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-  console.log("Success:", values);
-};
-
-const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
-  console.log("Failed:", errorInfo);
+  typeId?: number;
+  firstName?: string;
+  lastName?: string | null;
+  email?: string;
+  phoneNumber?: string | null;
 };
 
 const RegisterPage: React.FC = () => {
   const router = useRouter();
+  const [selectOpen, setSelectOpen] = useState(false);
+
+  const [user, setUser] = useState<UserRegisterType | null>(null);
+
   const handleLoginCLick = () => {
     router.push("/login");
   };
 
-  const handleRegisterClick = () => {
-    register({ username, password });
+  const setUserWithPredifinedDataPosition = (
+    username = user?.username,
+    password = user?.password,
+    typeId = user?.typeId,
+    firstName = user?.firstName,
+    lastName = user?.lastName,
+    email = user?.email,
+    phoneNumber = user?.phoneNumber
+  ) => {
+    setUser({
+      username,
+      password,
+      typeId,
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+    });
   };
 
-  const dispatch = useDispatch();
+  const handleRegisterClick = () => {
+    register(user);
+    toast.success("El usuario se ha registrado con exito");
+    router.push("/");
+  };
 
-  const { username, password } = useSelector((state: RootState) => state.user);
+  const handleSelectDropdownChange = (open: boolean) => {
+    setSelectOpen(open);
+  };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
+    <>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
       >
-        <Form.Item<FieldType>
-          label="Username"
-          name="username"
-          rules={[{ required: true, message: "Please input your username!" }]}
+        <Form
+          name="basic"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: "100vh" }}
+          initialValues={{ remember: true }}
+          autoComplete="off"
         >
-          <Input onChange={(e) => dispatch(setUsername(e.target.value))} />
-        </Form.Item>
-
-        <Form.Item<FieldType>
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
-        >
-          <Input.Password
-            onChange={(e) => dispatch(setPassword(e.target.value))}
-          />
-        </Form.Item>
-
-        <Form.Item<FieldType>
-          name="remember"
-          valuePropName="checked"
-          label={null}
-        >
-          <Checkbox>Remember me</Checkbox>
-        </Form.Item>
-
-        <Form.Item label={null}>
-          <div
-            style={{
-              display: "flex",
-              gap: "8px",
-              justifyContent: "flex-start",
-            }}
+          <Divider style={{ borderColor: "#000000" }}>
+            Authentification information
+          </Divider>
+          <Form.Item<UserRegisterType>
+            label="Username"
+            name="username"
+            rules={[{ required: true, message: "Please input your username!" }]}
           >
-            <Button
-              onClick={handleLoginCLick}
-              type="text"
-              size="middle"
-              style={{ padding: "5px 15px" }}
+            <Input
+              onChange={(e) =>
+                setUserWithPredifinedDataPosition(
+                  e.target.value,
+                  user?.password,
+                  user?.typeId,
+                  user?.firstName,
+                  user?.lastName,
+                  user?.email,
+                  user?.phoneNumber
+                )
+              }
+            />
+          </Form.Item>
+
+          <Form.Item<UserRegisterType>
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password
+              onChange={(e) =>
+                setUserWithPredifinedDataPosition(
+                  user?.username,
+                  e.target.value,
+                  user?.typeId,
+                  user?.firstName,
+                  user?.lastName,
+                  user?.email,
+                  user?.phoneNumber
+                )
+              }
+            />
+          </Form.Item>
+
+          <Divider style={{ borderColor: "#000000" }}>
+            Personal information
+          </Divider>
+
+          <Form.Item<UserRegisterType>
+            label="First Name"
+            name="firstName"
+            rules={[
+              { required: true, message: "Please input your First Name!" },
+            ]}
+          >
+            <Input
+              onChange={(e) =>
+                setUserWithPredifinedDataPosition(
+                  user?.username,
+                  user?.password,
+                  user?.typeId,
+                  e.target.value,
+                  user?.lastName,
+                  user?.email,
+                  user?.phoneNumber
+                )
+              }
+            />
+          </Form.Item>
+
+          <Form.Item label="Last Name" name="lastName">
+            <Input
+              onChange={(e) =>
+                setUserWithPredifinedDataPosition(
+                  user?.username,
+                  user?.password,
+                  user?.typeId,
+                  user?.firstName,
+                  e.target.value,
+                  user?.email,
+                  user?.phoneNumber
+                )
+              }
+            />
+          </Form.Item>
+
+          <Divider style={{ borderColor: "#000000" }}>
+            Contact information
+          </Divider>
+
+          <Form.Item<UserRegisterType>
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: "Please input your email!" }]}
+          >
+            <Input
+              onChange={(e) =>
+                setUserWithPredifinedDataPosition(
+                  user?.username,
+                  user?.password,
+                  user?.typeId,
+                  user?.firstName,
+                  user?.lastName,
+                  e.target.value,
+                  user?.phoneNumber
+                )
+              }
+            />
+          </Form.Item>
+
+          <Form.Item label="Phone number" name="phoneNumber">
+            <Input
+              onChange={(e) =>
+                setUserWithPredifinedDataPosition(
+                  user?.username,
+                  user?.password,
+                  user?.typeId,
+                  user?.firstName,
+                  user?.lastName,
+                  user?.email,
+                  e.target.value
+                )
+              }
+            />
+          </Form.Item>
+
+          <Form.Item<UserRegisterType>
+            label="Type"
+            name="typeId"
+            rules={[
+              { required: true, message: "Por favor pon tu tipo de usuario!" },
+            ]}
+          >
+            <Select
+              defaultValue="lucy"
+              style={{ width: 120 }}
+              allowClear
+              onChange={(e) =>
+                setUserWithPredifinedDataPosition(
+                  user?.username,
+                  user?.password,
+                  Number(e),
+                  user?.firstName,
+                  user?.lastName,
+                  user?.email,
+                  user?.phoneNumber
+                )
+              }
+              options={[
+                { value: "1", label: "Personal" },
+                { value: "2", label: "Empresario" },
+              ]}
+              placeholder="Elige tu tipo de usuario"
+              onDropdownVisibleChange={handleSelectDropdownChange}
+            />
+          </Form.Item>
+
+          <Form.Item label={null}>
+            <div
+              style={{
+                display: "flex",
+                gap: "8px",
+                justifyContent: "flex-start",
+                marginTop: selectOpen ? "40px" : "0px",
+              }}
             >
-              Loggear
-            </Button>
-            <Button
-              onClick={handleRegisterClick}
-              type="primary"
-              htmlType="submit"
-              style={{ padding: "5px 15px" }}
-            >
-              Registrar
-            </Button>
-          </div>
-        </Form.Item>
-      </Form>
-    </div>
+              <Button
+                onClick={handleLoginCLick}
+                type="text"
+                size="middle"
+                style={{ padding: "5px 15px" }}
+              >
+                Loggear
+              </Button>
+              <Button
+                onClick={handleRegisterClick}
+                type="primary"
+                htmlType="submit"
+                style={{ padding: "5px 15px" }}
+              >
+                Registrar
+              </Button>
+            </div>
+          </Form.Item>
+        </Form>
+      </div>
+    </>
   );
 };
 
