@@ -1,9 +1,9 @@
 import { backendURL } from "./axios";
 
-export const login = async (token) => {
+export const basicLogin = async (token) => {
   try {
     const response = await backendURL.post(
-      "login",
+      "auth/basic/login",
       {},
       {
         headers: {
@@ -17,9 +17,18 @@ export const login = async (token) => {
   }
 };
 
-export const register = async (user) => {
+export const basicRegister = async (user) => {
   try {
-    const response = await backendURL.post("users/create", user);
+    const response = await backendURL.post("auth/basic/register", user);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const sendGoogleToken = async (token) => {
+  try {
+    const response = await backendURL.post("/auth/google", { token });
     return response.data;
   } catch (error) {
     throw error;

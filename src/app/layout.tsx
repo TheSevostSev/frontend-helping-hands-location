@@ -16,6 +16,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import useTokenStore from "@/stores/useTokenStore";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import { SessionProvider } from "next-auth/react";
 
 const { Sider, Content } = Layout;
 
@@ -56,37 +57,53 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ReactQueryProvider>
-          <ToastContainer
-            position="bottom-center"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick={true}
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-          />
-          <AntdRegistry>
-            <Layout
-              style={{
-                background: colorBgContainer,
-                borderRadius: borderRadiusLG,
-                position: "relative",
-              }}
-            >
-              {isHydrated ? (
-                token ? (
-                  <Popconfirm
-                    title="Quieres cerrar session?"
-                    description="Estas seguro de que quieres cerrar la sesion?"
-                    okText="Si"
-                    cancelText="No"
-                    onConfirm={handleLogoutClick}
-                  >
+          <SessionProvider>
+            <ToastContainer
+              position="bottom-center"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick={true}
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
+            <AntdRegistry>
+              <Layout
+                style={{
+                  background: colorBgContainer,
+                  borderRadius: borderRadiusLG,
+                  position: "relative",
+                }}
+              >
+                {isHydrated ? (
+                  token ? (
+                    <Popconfirm
+                      title="Quieres cerrar session?"
+                      description="Estas seguro de que quieres cerrar la sesion?"
+                      okText="Si"
+                      cancelText="No"
+                      onConfirm={handleLogoutClick}
+                    >
+                      <Button
+                        type="primary"
+                        icon={<LogoutOutlined />}
+                        style={{
+                          position: "absolute",
+                          top: "20px",
+                          right: "20px",
+                          zIndex: 1000,
+                        }}
+                      >
+                        Logout
+                      </Button>
+                    </Popconfirm>
+                  ) : (
                     <Button
                       type="primary"
-                      icon={<LogoutOutlined />}
+                      onClick={handleLoginClick}
+                      icon={<LoginOutlined />}
                       style={{
                         position: "absolute",
                         top: "20px",
@@ -94,64 +111,50 @@ export default function RootLayout({
                         zIndex: 1000,
                       }}
                     >
-                      Logout
+                      Iniciar session
                     </Button>
-                  </Popconfirm>
-                ) : (
-                  <Button
-                    type="primary"
-                    onClick={handleLoginClick}
-                    icon={<LoginOutlined />}
-                    style={{
-                      position: "absolute",
-                      top: "20px",
-                      right: "20px",
-                      zIndex: 1000,
-                    }}
-                  >
-                    Iniciar session
-                  </Button>
-                )
-              ) : null}
-              <Sider
-                trigger={null}
-                collapsible
-                collapsed={collapsed}
-                style={{
-                  height: "100vh",
-                }}
-              >
-                <div className="demo-logo-vertical" />
-                <Button
-                  type="text"
-                  icon={
-                    collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />
-                  }
-                  onClick={() => setCollapsed(!collapsed)}
+                  )
+                ) : null}
+                <Sider
+                  trigger={null}
+                  collapsible
+                  collapsed={collapsed}
                   style={{
-                    fontSize: "18px",
-                    width: 64,
-                    height: 64,
-                    color: "white",
+                    height: "100vh",
                   }}
-                />
-                <Menu
-                  theme="dark"
-                  mode="inline"
-                  selectedKeys={[currentPath]}
-                  items={[
-                    {
-                      key: "/",
-                      icon: <CompassOutlined />,
-                      label: "Mapa",
-                      onClick: handleMapClick,
-                    },
-                  ]}
-                />
-              </Sider>
-              <Content>{children}</Content>
-            </Layout>
-          </AntdRegistry>
+                >
+                  <div className="demo-logo-vertical" />
+                  <Button
+                    type="text"
+                    icon={
+                      collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />
+                    }
+                    onClick={() => setCollapsed(!collapsed)}
+                    style={{
+                      fontSize: "18px",
+                      width: 64,
+                      height: 64,
+                      color: "white",
+                    }}
+                  />
+                  <Menu
+                    theme="dark"
+                    mode="inline"
+                    selectedKeys={[currentPath ? currentPath : "/"]}
+                    items={[
+                      {
+                        key: "/",
+                        icon: <CompassOutlined />,
+                        label: "Mapa",
+                        onClick: handleMapClick,
+                      },
+                    ]}
+                  />
+                </Sider>
+                <Content>{children}</Content>
+              </Layout>
+            </AntdRegistry>
+          </SessionProvider>
         </ReactQueryProvider>
       </body>
     </html>

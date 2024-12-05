@@ -3,10 +3,11 @@
 import React, { useState } from "react";
 import { Button, Form, Input, Select, Divider } from "antd";
 import { useRouter } from "next/navigation";
-import { register } from "../api/auth";
+import { basicRegister } from "../api/auth";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import { getListUserTypes } from "../api/type";
+import useTokenStore from "@/stores/useTokenStore";
 
 type UserRegisterType = {
   username?: string;
@@ -27,6 +28,8 @@ const { Option } = Select;
 
 const RegisterPage: React.FC = () => {
   const router = useRouter();
+
+  const setToken = useTokenStore((state) => state.setToken);
 
   const [user, setUser] = useState<UserRegisterType | null>(null);
 
@@ -61,9 +64,10 @@ const RegisterPage: React.FC = () => {
   };
 
   const handleRegisterClick = () => {
-    register(user)
-      .then(() => {
+    basicRegister(user)
+      .then((data) => {
         toast.success("El usuario se ha registrado con exito");
+        setToken(data.token, true);
         router.push("/");
       })
       .catch((error) => {
@@ -91,7 +95,7 @@ const RegisterPage: React.FC = () => {
           initialValues={{ remember: true }}
           autoComplete="off"
         >
-          <Divider style={{ borderColor: "#000000" }}>
+          <Divider style={{ borderColor: "#000000", padding: "5px 5px" }}>
             Authentification information
           </Divider>
           <Form.Item<UserRegisterType>
@@ -134,7 +138,7 @@ const RegisterPage: React.FC = () => {
             />
           </Form.Item>
 
-          <Divider style={{ borderColor: "#000000" }}>
+          <Divider style={{ borderColor: "#000000", padding: "5px 5px" }}>
             Personal information
           </Divider>
 
@@ -207,7 +211,7 @@ const RegisterPage: React.FC = () => {
             </Select>
           </Form.Item>
 
-          <Divider style={{ borderColor: "#000000" }}>
+          <Divider style={{ borderColor: "#000000", padding: "5px 5px" }}>
             Contact information
           </Divider>
 

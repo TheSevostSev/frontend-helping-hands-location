@@ -2,7 +2,7 @@ import axios from "axios";
 import useTokenStore from "@/stores/useTokenStore";
 
 export const backendURL = axios.create({
-  baseURL: "http://localhost:8080/",
+  baseURL: process.env.BACKEND_URL || "http://localhost:8080/",
 });
 
 backendURL.interceptors.request.use(

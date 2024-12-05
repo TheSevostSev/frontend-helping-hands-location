@@ -2,11 +2,12 @@
 
 import React, { useState } from "react";
 
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Checkbox, Form, Input, Divider, Image } from "antd";
 import { useRouter } from "next/navigation";
-import { login } from "../api/auth";
+import { basicLogin } from "../api/auth";
 import { toast } from "react-toastify";
 import useTokenStore from "@/stores/useTokenStore";
+import { signIn } from "next-auth/react";
 
 type UserLoginType = {
   username?: string;
@@ -34,7 +35,7 @@ const LoginPage: React.FC = () => {
 
   const handleLoginClick = () => {
     const token = btoa(`${user?.username}:${user?.password}`);
-    login(token)
+    basicLogin(token)
       .then((data) => {
         setToken(data.token, user?.remember ? false : true);
         toast.success("Se ha iniciado la session correctamente!");
@@ -45,6 +46,10 @@ const LoginPage: React.FC = () => {
           error instanceof Error ? error.message : "An unknown error occurred";
         toast.error(errorMessage);
       });
+  };
+
+  const handleLoginWithGoogle = () => {
+    signIn("google");
   };
 
   return (
@@ -140,6 +145,33 @@ const LoginPage: React.FC = () => {
             </Button>
           </div>
         </Form.Item>
+
+        <Divider style={{ borderColor: "#000000", padding: "10px 10px" }}>
+          OR
+        </Divider>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            type="primary"
+            shape="round"
+            onClick={handleLoginWithGoogle}
+            icon={
+              <Image
+                src="/icons/google-logo.png"
+                alt="Location"
+                style={{ width: 30, height: 30 }}
+              />
+            }
+            size="large"
+          >
+            Continue with Google
+          </Button>
+        </div>
       </Form>
     </div>
   );
