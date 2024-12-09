@@ -1,16 +1,11 @@
 import { backendURL } from "./axios";
 
-export const basicLogin = async (token) => {
+export const basicLogin = async (user) => {
   try {
-    const response = await backendURL.post(
-      "auth/basic/login",
-      {},
-      {
-        headers: {
-          Authorization: `Basic ${token}`,
-        },
-      }
-    );
+    const response = await backendURL.post("auth/basic/login", {
+      username: user.username,
+      password: user.password,
+    });
     return response.data;
   } catch (error) {
     throw error;

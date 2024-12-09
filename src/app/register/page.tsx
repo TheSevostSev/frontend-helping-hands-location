@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import { getListUserTypes } from "../api/type";
 import useTokenStore from "@/stores/useTokenStore";
+import AuthLayout from "../layouts/AuthLayout";
 
 type UserRegisterType = {
   username?: string;
@@ -33,8 +34,8 @@ const RegisterPage: React.FC = () => {
 
   const [user, setUser] = useState<UserRegisterType | null>(null);
 
-  const handleLoginCLick = () => {
-    router.push("/login");
+  const handleCancelCLick = () => {
+    router.push("/");
   };
 
   const { data: userTypes } = useQuery({
@@ -78,13 +79,13 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <>
+    <AuthLayout>
       <div
         style={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "100vh",
+          height: "90vh",
         }}
       >
         <Form
@@ -261,12 +262,12 @@ const RegisterPage: React.FC = () => {
               }}
             >
               <Button
-                onClick={handleLoginCLick}
+                onClick={handleCancelCLick}
                 type="text"
                 size="middle"
                 style={{ padding: "5px 15px" }}
               >
-                Loggear
+                Cancel
               </Button>
               <Button
                 onClick={handleRegisterClick}
@@ -280,7 +281,7 @@ const RegisterPage: React.FC = () => {
           </Form.Item>
         </Form>
       </div>
-    </>
+    </AuthLayout>
   );
 };
 

@@ -8,6 +8,7 @@ import { basicLogin } from "../api/auth";
 import { toast } from "react-toastify";
 import useTokenStore from "@/stores/useTokenStore";
 import { signIn } from "next-auth/react";
+import AuthLayout from "../layouts/AuthLayout";
 
 type UserLoginType = {
   username?: string;
@@ -29,13 +30,12 @@ const LoginPage: React.FC = () => {
     setUser({ username, password, remember });
   };
 
-  const handleRegisterClick = () => {
-    router.push("/register");
+  const handleCancelClick = () => {
+    router.push("/");
   };
 
   const handleLoginClick = () => {
-    const token = btoa(`${user?.username}:${user?.password}`);
-    basicLogin(token)
+    basicLogin(user)
       .then((data) => {
         setToken(data.token, user?.remember ? false : true);
         toast.success("Se ha iniciado la session correctamente!");
@@ -53,127 +53,129 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
-        initialValues={{ remember: true }}
-        autoComplete="off"
+    <AuthLayout>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "70vh",
+        }}
       >
-        <Form.Item<UserLoginType>
-          label="Username"
-          name="username"
-          rules={[{ required: true, message: "Please input your username!" }]}
+        <Form
+          name="basic"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: 600 }}
+          initialValues={{ remember: true }}
+          autoComplete="off"
         >
-          <Input
-            onChange={(e) =>
-              setUserWithPredifinedDataPosition(
-                e.target.value,
-                user?.password,
-                user?.remember
-              )
-            }
-          />
-        </Form.Item>
-
-        <Form.Item<UserLoginType>
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
-        >
-          <Input.Password
-            onChange={(e) =>
-              setUserWithPredifinedDataPosition(
-                user?.username,
-                e.target.value,
-                user?.remember
-              )
-            }
-          />
-        </Form.Item>
-
-        <Form.Item<UserLoginType>
-          name="remember"
-          valuePropName="checked"
-          label={null}
-        >
-          <Checkbox
-            onChange={(e) =>
-              setUserWithPredifinedDataPosition(
-                user?.username,
-                user?.password,
-                e.target.value
-              )
-            }
+          <Form.Item<UserLoginType>
+            label="Username"
+            name="username"
+            rules={[{ required: true, message: "Please input your username!" }]}
           >
-            Remember me
-          </Checkbox>
-        </Form.Item>
+            <Input
+              onChange={(e) =>
+                setUserWithPredifinedDataPosition(
+                  e.target.value,
+                  user?.password,
+                  user?.remember
+                )
+              }
+            />
+          </Form.Item>
 
-        <Form.Item label={null}>
+          <Form.Item<UserLoginType>
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password
+              onChange={(e) =>
+                setUserWithPredifinedDataPosition(
+                  user?.username,
+                  e.target.value,
+                  user?.remember
+                )
+              }
+            />
+          </Form.Item>
+
+          <Form.Item<UserLoginType>
+            name="remember"
+            valuePropName="checked"
+            label={null}
+          >
+            <Checkbox
+              onChange={(e) =>
+                setUserWithPredifinedDataPosition(
+                  user?.username,
+                  user?.password,
+                  e.target.value
+                )
+              }
+            >
+              Remember me
+            </Checkbox>
+          </Form.Item>
+
+          <Form.Item label={null}>
+            <div
+              style={{
+                display: "flex",
+                gap: "8px",
+                justifyContent: "flex-start",
+              }}
+            >
+              <Button
+                onClick={handleCancelClick}
+                type="text"
+                size="middle"
+                style={{ padding: "5px 15px" }}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ padding: "5px 15px" }}
+                onClick={handleLoginClick}
+              >
+                Loggear
+              </Button>
+            </div>
+          </Form.Item>
+
+          <Divider style={{ borderColor: "#000000", padding: "10px 10px" }}>
+            OR
+          </Divider>
+
           <div
             style={{
               display: "flex",
-              gap: "8px",
-              justifyContent: "flex-start",
+              justifyContent: "center",
             }}
           >
             <Button
-              onClick={handleRegisterClick}
-              type="text"
-              size="middle"
-              style={{ padding: "5px 15px" }}
-            >
-              Crear cuenta
-            </Button>
-            <Button
               type="primary"
-              htmlType="submit"
-              style={{ padding: "5px 15px" }}
-              onClick={handleLoginClick}
+              shape="round"
+              onClick={handleLoginWithGoogle}
+              icon={
+                <Image
+                  src="/icons/google-logo.png"
+                  alt="Location"
+                  style={{ width: 30, height: 30 }}
+                />
+              }
+              size="large"
             >
-              Loggear
+              Continue with Google
             </Button>
           </div>
-        </Form.Item>
-
-        <Divider style={{ borderColor: "#000000", padding: "10px 10px" }}>
-          OR
-        </Divider>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <Button
-            type="primary"
-            shape="round"
-            onClick={handleLoginWithGoogle}
-            icon={
-              <Image
-                src="/icons/google-logo.png"
-                alt="Location"
-                style={{ width: 30, height: 30 }}
-              />
-            }
-            size="large"
-          >
-            Continue with Google
-          </Button>
-        </div>
-      </Form>
-    </div>
+        </Form>
+      </div>
+    </AuthLayout>
   );
 };
 
