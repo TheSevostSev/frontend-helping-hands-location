@@ -1,21 +1,45 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import L from "leaflet";
+import React from "react";
 import "leaflet/dist/leaflet.css";
 
-const Map: React.FC = () => {
+interface Coordinates {
+  latitude: number | null;
+  longitude: number | null;
+}
+
+interface MapProps {
+  markUserLocation?: boolean | null;
+  searchedLocationByAddress?: Coordinates | null;
+}
+
+const Map: React.FC<MapProps> = ({
+  markUserLocation,
+  searchedLocationByAddress,
+}) => {
   const [location, setLocation] = useState<{
     latitude: number;
     longitude: number;
   } | null>(null);
   const [hasMounted, setHasMounted] = useState(false);
 
-  const defaultLocation = { latitude: 40.4168, longitude: -3.7038 };
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<L.Map | null>(null);
+  const userMarkerRef = useRef<L.Marker | null>(null);
+  const searchedLocationMarkerRef = useRef<L.Marker | null>(null);
 
-  const createIcon = (size: number) =>
+  const myLocationIcon = (size: number) =>
     L.icon({
       iconUrl: "/icons/my-location.png",
+      iconSize: [size * 1.8, size * 1.8],
+      iconAnchor: [size / 1.1, size * 1.5],
+    });
+
+  const searchedLocationByAddressIcon = (size: number) =>
+    L.icon({
+      iconUrl: "/icons/selected-location-by-address.png",
       iconSize: [size * 1.8, size * 1.8],
       iconAnchor: [size / 1.1, size * 1.5],
     });
@@ -25,58 +49,110 @@ const Map: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (hasMounted && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-        },
-        () => {
-          setLocation(defaultLocation);
-        }
-      );
-    } else {
-      setLocation(defaultLocation);
-    }
-  }, [hasMounted]);
+    const defaultLocation = { latitude: 40.4168, longitude: -3.7038 };
 
-  useEffect(() => {
-    if (hasMounted && location) {
-      const mapContainer = document.getElementById("map");
-      if (mapContainer) {
-        const map = L.map(mapContainer, {
-          center: [location.latitude, location.longitude],
-          zoom: 13,
-        });
-
-        const marker = L.marker([location.latitude, location.longitude], {
-          icon: createIcon(30), // Initial size
-        }).addTo(map);
-
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
-          map
+    if (hasMounted) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLocation({
+              latitude:
+                searchedLocationByAddress?.latitude ?? position.coords.latitude,
+              longitude:
+                searchedLocationByAddress?.longitude ??
+                position.coords.longitude,
+            });
+          },
+          () => {
+            setLocation({
+              latitude:
+                searchedLocationByAddress?.latitude ?? defaultLocation.latitude,
+              longitude:
+                searchedLocationByAddress?.longitude ??
+                defaultLocation.longitude,
+            });
+          }
         );
-
-        map.on("zoomend", () => {
-          const zoomLevel = map.getZoom();
-          const iconSize = Math.max(20, zoomLevel * 2);
-          marker.setIcon(createIcon(iconSize));
+      } else {
+        setLocation({
+          latitude:
+            searchedLocationByAddress?.latitude ?? defaultLocation.latitude,
+          longitude:
+            searchedLocationByAddress?.longitude ?? defaultLocation.longitude,
         });
-
-        return () => {
-          map.remove();
-        };
       }
     }
-  }, [location, hasMounted]);
+  }, [
+    hasMounted,
+    searchedLocationByAddress?.latitude,
+    searchedLocationByAddress?.longitude,
+  ]);
+
+  useEffect(() => {
+    if (hasMounted && location && !mapRef.current && mapContainerRef.current) {
+      mapRef.current = L.map(mapContainerRef.current, {
+        center: [location.latitude, location.longitude],
+        zoom: 13,
+      });
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        mapRef.current
+      );
+
+      if (markUserLocation) {
+        userMarkerRef.current = L.marker(
+          [location.latitude, location.longitude],
+          {
+            icon: myLocationIcon(30),
+          }
+        ).addTo(mapRef.current);
+      }
+
+      if (
+        searchedLocationByAddress?.longitude &&
+        searchedLocationByAddress?.latitude
+      ) {
+        searchedLocationMarkerRef.current = L.marker(
+          [location.latitude, location.longitude],
+          {
+            icon: searchedLocationByAddressIcon(30),
+          }
+        ).addTo(mapRef.current);
+      }
+
+      mapRef.current.on("zoomend", () => {
+        const zoomLevel = mapRef.current ? mapRef.current.getZoom() : 13;
+        const iconSize = Math.max(20, zoomLevel * 2);
+        if (userMarkerRef.current) {
+          userMarkerRef.current.setIcon(myLocationIcon(iconSize));
+        }
+      });
+
+      return () => {
+        if (mapRef.current) {
+          mapRef.current.remove();
+          mapRef.current = null;
+        }
+      };
+    }
+  }, [
+    location,
+    hasMounted,
+    searchedLocationByAddress?.latitude,
+    markUserLocation,
+    searchedLocationByAddress?.longitude,
+  ]);
 
   if (!hasMounted) {
     return null;
   }
 
-  return <div id="map" style={{ width: "100%", height: "100vh" }} />;
+  return (
+    <div
+      ref={mapContainerRef}
+      style={{ width: "100%", height: "100vh" }} // Ensure full height for the map
+    />
+  );
 };
 
 export default Map;
