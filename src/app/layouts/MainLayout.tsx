@@ -78,6 +78,7 @@ export default function MainLayout({
                 top: "20px",
                 right: "20px",
                 zIndex: 1000,
+                backgroundColor: "#cce4e9",
               }}
             >
               Logout
@@ -93,6 +94,7 @@ export default function MainLayout({
               top: "20px",
               right: "20px",
               zIndex: 1000,
+              backgroundColor: "#cce4e9",
             }}
           >
             Iniciar session
@@ -105,7 +107,8 @@ export default function MainLayout({
         collapsed={collapsed}
         style={{
           height: "100vh",
-        }}
+          backgroundColor: "#cce4e9",      
+       }}
       >
         <div className="demo-logo-vertical" />
         <Button
@@ -114,19 +117,26 @@ export default function MainLayout({
           onClick={() => setCollapsed(!collapsed)}
           style={{
             fontSize: "18px",
-            width: 64,
+            width: 80,
             height: 64,
-            color: "white",
-          }}
+            color: "black",
+                    }}
+                    
         />
         <Menu
-          theme="dark"
           mode="inline"
+          style={{
+            fontSize: "14px",
+            color: "white",
+            backgroundColor: "#cce4e9",
+            borderStyle: "solid",
+            borderRadius: "10px",
+                    }}
           items={[
             {
               key: "add-location",
               icon: <EnvironmentOutlined />,
-              label: "Add location",
+              label: "Añadir Ubicación",
               onClick: handleAddLocationClick,
             },
           ]}
