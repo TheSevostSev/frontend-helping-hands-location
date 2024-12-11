@@ -6,7 +6,7 @@ import "leaflet/dist/leaflet.css";
 const Map = dynamic(() => import("../components/Map"), { ssr: false });
 
 const MainMap: React.FC = ({}) => {
-  return <Map markUserLocation={true}></Map>;
+  return <Map zoomControl={true} markUserLocation={true}></Map>;
 };
 
 export default MainMap;

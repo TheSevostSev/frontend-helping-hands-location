@@ -11,11 +11,27 @@ import { Modal, Form, Input } from "antd";
 import MainLayout from "./layouts/MainLayout";
 import SelectLocationByAddress from "@/components/SelectLocationByAddress";
 import MainMap from "@/components/MainMap";
+import { Typography, Select } from "antd";
+import { getListLocationTags } from "@/app/api/location-tag";
+import { createLocation } from "@/app/api/location";
+import { useQuery } from "@tanstack/react-query";
+
+const { Title } = Typography;
 
 const Map = dynamic(() => import("../components/Map"), { ssr: false });
 
 export default function Home() {
   const { data: session } = useSession();
+
+  const { data: locationTags } = useQuery({
+    queryFn: getListLocationTags,
+    queryKey: ["location_tags"],
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const [form] = Form.useForm();
+
+  const [tagIds, setTagIds] = useState<string | string[]>([]);
 
   const [coordinates, setCoordinates] = useState<{
     latitude: number | null;
@@ -42,9 +58,20 @@ export default function Home() {
   }, [session?.authMessage, session?.tokenValue, setToken]);
 
   const handleOk = () => {
+    createLocation({
+      name: form.getFieldValue("name"),
+      tagIds,
+      latitude: coordinates.latitude,
+      longitude: coordinates.longitude,
+    });
+    setTagIds([]);
     toggleAddLocation();
     setCoordinates({ latitude: null, longitude: null });
     setEraseAddress(true);
+  };
+
+  const handleChange = (value: string | string[]) => {
+    setTagIds(value);
   };
 
   const handleCancel = () => {
@@ -63,7 +90,7 @@ export default function Home() {
           onOk={handleOk}
           onCancel={handleCancel}
           centered
-          style={{ textAlign: "center" }}
+          style={{ textAlign: "center", alignItems: "center" }}
         >
           <Form
             name="basic"
@@ -72,10 +99,11 @@ export default function Home() {
             style={{ width: "100%" }}
             initialValues={{ remember: true }}
             autoComplete="off"
+            form={form}
           >
             <Form.Item
               label="Title"
-              name="title"
+              name="name"
               rules={[
                 {
                   required: true,
@@ -84,6 +112,35 @@ export default function Home() {
               ]}
             >
               <Input />
+            </Form.Item>
+            <Form.Item
+              label="Tags"
+              name="tags"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select tags for your location!",
+                },
+              ]}
+            >
+              <Select
+                mode="multiple"
+                placeholder="Please select"
+                style={{ width: "100%" }}
+                fieldNames={{ value: "id", label: "name" }}
+                options={locationTags}
+                optionFilterProp="name"
+                filterSort={(optionA, optionB) =>
+                  ((optionA?.label as string) ?? "")
+                    .toLowerCase()
+                    .localeCompare(
+                      ((optionB?.label as string) ?? "").toLowerCase()
+                    )
+                }
+                onChange={(e) => {
+                  handleChange(e);
+                }}
+              />
             </Form.Item>
             <Form.Item
               label="Address"
@@ -101,7 +158,26 @@ export default function Home() {
               ></SelectLocationByAddress>
             </Form.Item>
 
-            <Map searchedLocationByAddress={coordinates}></Map>
+            <Title level={5} style={{ fontWeight: "normal" }}>
+              Location preview
+            </Title>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+                width: "100%",
+              }}
+            >
+              <Map
+                style={{ width: "70%", height: "30vh" }}
+                zoomControl={false}
+                zoom={14}
+                searchedLocationByAddress={coordinates}
+              />
+            </div>
           </Form>
         </Modal>
       </div>

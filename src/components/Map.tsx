@@ -13,11 +13,17 @@ interface Coordinates {
 interface MapProps {
   markUserLocation?: boolean | null;
   searchedLocationByAddress?: Coordinates | null;
+  zoomControl: boolean;
+  style?: object;
+  zoom?: number;
 }
 
 const Map: React.FC<MapProps> = ({
   markUserLocation,
   searchedLocationByAddress,
+  zoomControl,
+  style,
+  zoom,
 }) => {
   const [location, setLocation] = useState<{
     latitude: number;
@@ -92,7 +98,8 @@ const Map: React.FC<MapProps> = ({
     if (hasMounted && location && !mapRef.current && mapContainerRef.current) {
       mapRef.current = L.map(mapContainerRef.current, {
         center: [location.latitude, location.longitude],
-        zoom: 13,
+        zoom: zoom ?? 13,
+        zoomControl,
       });
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
@@ -141,6 +148,7 @@ const Map: React.FC<MapProps> = ({
     searchedLocationByAddress?.latitude,
     markUserLocation,
     searchedLocationByAddress?.longitude,
+    zoomControl,
   ]);
 
   if (!hasMounted) {
@@ -150,7 +158,7 @@ const Map: React.FC<MapProps> = ({
   return (
     <div
       ref={mapContainerRef}
-      style={{ width: "100%", height: "100vh" }} // Ensure full height for the map
+      style={style ?? { width: "100%", height: "100vh" }}
     />
   );
 };
