@@ -8,3 +8,12 @@ export const createLocation = async (location) => {
     throw error;
   }
 };
+
+export const getListLocations = async () => {
+  try {
+    const response = await backendURL.get("locations");
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

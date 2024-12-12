@@ -63,26 +63,61 @@ export default function MainLayout({
     >
       {isHydrated ? (
         token ? (
-          <Popconfirm
-            title="Quieres cerrar session?"
-            description="Estas seguro de que quieres cerrar la sesion?"
-            okText="Si"
-            cancelText="No"
-            onConfirm={handleLogoutClick}
-          >
-            <Button
-              type="primary"
-              icon={<LogoutOutlined />}
+          <>
+            <Popconfirm
+              title="Quieres cerrar session?"
+              description="Estas seguro de que quieres cerrar la sesion?"
+              okText="Si"
+              cancelText="No"
+              onConfirm={handleLogoutClick}
+            >
+              <Button
+                type="primary"
+                icon={<LogoutOutlined />}
+                style={{
+                  position: "absolute",
+                  top: "20px",
+                  right: "20px",
+                  zIndex: 1000,
+                }}
+              >
+                Logout
+              </Button>
+            </Popconfirm>
+            <Sider
+              trigger={null}
+              collapsible
+              collapsed={collapsed}
               style={{
-                position: "absolute",
-                top: "20px",
-                right: "20px",
-                zIndex: 1000,
+                height: "100vh",
               }}
             >
-              Logout
-            </Button>
-          </Popconfirm>
+              <div className="demo-logo-vertical" />
+              <Button
+                type="text"
+                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                onClick={() => setCollapsed(!collapsed)}
+                style={{
+                  fontSize: "18px",
+                  width: 64,
+                  height: 64,
+                  color: "white",
+                }}
+              />
+              <Menu
+                theme="dark"
+                mode="inline"
+                items={[
+                  {
+                    key: "add-location",
+                    icon: <EnvironmentOutlined />,
+                    label: "Add location",
+                    onClick: handleAddLocationClick,
+                  },
+                ]}
+              />
+            </Sider>
+          </>
         ) : (
           <Button
             type="primary"
@@ -95,43 +130,10 @@ export default function MainLayout({
               zIndex: 1000,
             }}
           >
-            Iniciar session
+            Presentarme como voluntario
           </Button>
         )
       ) : null}
-      <Sider
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        style={{
-          height: "100vh",
-        }}
-      >
-        <div className="demo-logo-vertical" />
-        <Button
-          type="text"
-          icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-          onClick={() => setCollapsed(!collapsed)}
-          style={{
-            fontSize: "18px",
-            width: 64,
-            height: 64,
-            color: "white",
-          }}
-        />
-        <Menu
-          theme="dark"
-          mode="inline"
-          items={[
-            {
-              key: "add-location",
-              icon: <EnvironmentOutlined />,
-              label: "Add location",
-              onClick: handleAddLocationClick,
-            },
-          ]}
-        />
-      </Sider>
       <Content>{children}</Content>
     </Layout>
   );

@@ -10,12 +10,26 @@ interface Coordinates {
   longitude: number | null;
 }
 
+interface Tag {
+  id: number;
+  name: string;
+}
+
+interface HelpingHandsLocation {
+  id: number;
+  name: string;
+  latitude: number | null;
+  longitude: number | null;
+  tags: Tag[];
+}
+
 interface MapProps {
   markUserLocation?: boolean | null;
   searchedLocationByAddress?: Coordinates | null;
   zoomControl: boolean;
   style?: object;
   zoom?: number;
+  helpingHandsLocations?: HelpingHandsLocation[];
 }
 
 const Map: React.FC<MapProps> = ({
@@ -24,6 +38,7 @@ const Map: React.FC<MapProps> = ({
   zoomControl,
   style,
   zoom,
+  helpingHandsLocations,
 }) => {
   const [location, setLocation] = useState<{
     latitude: number;
@@ -46,6 +61,13 @@ const Map: React.FC<MapProps> = ({
   const searchedLocationByAddressIcon = (size: number) =>
     L.icon({
       iconUrl: "/icons/selected-location-by-address.png",
+      iconSize: [size * 1.8, size * 1.8],
+      iconAnchor: [size / 1.1, size * 1.5],
+    });
+
+  const helpinghandsLocationIcon = (size: number) =>
+    L.icon({
+      iconUrl: "/icons/helping-hands-location.png",
       iconSize: [size * 1.8, size * 1.8],
       iconAnchor: [size / 1.1, size * 1.5],
     });
@@ -109,32 +131,54 @@ const Map: React.FC<MapProps> = ({
       if (markUserLocation) {
         userMarkerRef.current = L.marker(
           [location.latitude, location.longitude],
-          {
-            icon: myLocationIcon(30),
-          }
+          { icon: myLocationIcon(30) }
         ).addTo(mapRef.current);
       }
 
       if (
-        searchedLocationByAddress?.longitude &&
-        searchedLocationByAddress?.latitude
+        searchedLocationByAddress?.latitude &&
+        searchedLocationByAddress?.longitude
       ) {
         searchedLocationMarkerRef.current = L.marker(
-          [location.latitude, location.longitude],
-          {
-            icon: searchedLocationByAddressIcon(30),
-          }
+          [
+            searchedLocationByAddress.latitude,
+            searchedLocationByAddress.longitude,
+          ],
+          { icon: searchedLocationByAddressIcon(30) }
         ).addTo(mapRef.current);
       }
 
+      if (helpingHandsLocations) {
+        helpingHandsLocations.forEach((loc) => {
+          if (loc.latitude && loc.longitude && mapRef.current) {
+            const marker = L.marker([loc.latitude, loc.longitude], {
+              icon: helpinghandsLocationIcon(30),
+            }).addTo(mapRef.current);
+            marker.bindPopup(
+              `<b>Name: ${loc.name}</b><br>Tags: ${loc.tags
+                .map((tag) => tag.name)
+                .join(", ")}`
+            );
+          }
+        });
+      }
+
+      // Update icon size on zoom
       mapRef.current.on("zoomend", () => {
         const zoomLevel = mapRef.current ? mapRef.current.getZoom() : 13;
         const iconSize = Math.max(20, zoomLevel * 2);
+
         if (userMarkerRef.current) {
           userMarkerRef.current.setIcon(myLocationIcon(iconSize));
         }
+        if (searchedLocationMarkerRef.current) {
+          searchedLocationMarkerRef.current.setIcon(
+            searchedLocationByAddressIcon(iconSize)
+          );
+        }
       });
 
+      // Cleanup function
       return () => {
         if (mapRef.current) {
           mapRef.current.remove();
@@ -143,12 +187,13 @@ const Map: React.FC<MapProps> = ({
       };
     }
   }, [
-    location,
     hasMounted,
-    searchedLocationByAddress?.latitude,
+    location,
+    searchedLocationByAddress,
     markUserLocation,
-    searchedLocationByAddress?.longitude,
     zoomControl,
+    zoom,
+    helpingHandsLocations,
   ]);
 
   if (!hasMounted) {
