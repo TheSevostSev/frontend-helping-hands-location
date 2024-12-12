@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import "leaflet/dist/leaflet.css";
 import { getListLocations } from "@/app/api/location";
 
-const Map = dynamic(() => import("../components/Map"), { ssr: false });
+const BaseMap = dynamic(() => import("./BaseMap"), { ssr: false });
 
 const MainMap: React.FC = ({}) => {
   const { data: helpingHandsLocations } = useQuery({
@@ -15,11 +15,11 @@ const MainMap: React.FC = ({}) => {
   });
 
   return (
-    <Map
+    <BaseMap
       zoomControl={true}
       markUserLocation={true}
       helpingHandsLocations={helpingHandsLocations}
-    ></Map>
+    ></BaseMap>
   );
 };
 

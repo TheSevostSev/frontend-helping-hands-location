@@ -16,7 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const { Title } = Typography;
 
-const Map = dynamic(() => import("../components/Map"), { ssr: false });
+const BaseMap = dynamic(() => import("./BaseMap"), { ssr: false });
 
 export default function AddLocationModal() {
   const { data: session } = useSession();
@@ -164,7 +164,7 @@ export default function AddLocationModal() {
             width: "100%",
           }}
         >
-          <Map
+          <BaseMap
             style={{ width: "70%", height: "30vh" }}
             zoomControl={false}
             zoom={14}

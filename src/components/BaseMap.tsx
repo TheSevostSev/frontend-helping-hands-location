@@ -33,7 +33,7 @@ interface MapProps {
   helpingHandsLocations?: HelpingHandsLocation[];
 }
 
-const Map: React.FC<MapProps> = ({
+const BaseMap: React.FC<MapProps> = ({
   markUserLocation,
   searchedLocationByAddress,
   zoomControl,
@@ -122,12 +122,20 @@ const Map: React.FC<MapProps> = ({
       mapRef.current = L.map(mapContainerRef.current, {
         center: [location.latitude, location.longitude],
         zoom: zoom ?? 13,
-        zoomControl,
+        zoomControl: false,
       });
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
         mapRef.current
       );
+
+      if (zoomControl) {
+        L.control
+          .zoom({
+            position: "bottomright",
+          })
+          .addTo(mapRef.current);
+      }
 
       if (markUserLocation) {
         userMarkerRef.current = L.marker(
@@ -210,4 +218,4 @@ const Map: React.FC<MapProps> = ({
   );
 };
 
-export default Map;
+export default BaseMap;
