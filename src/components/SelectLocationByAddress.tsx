@@ -13,7 +13,8 @@ interface Coordinates {
 
 interface SelectLocationByAddressProps {
   setCoordinates: React.Dispatch<React.SetStateAction<Coordinates>>;
-  eraseAddress: boolean | null;
+  setAddress: React.Dispatch<React.SetStateAction<string>>;
+  address: string;
 }
 
 const L = typeof window !== "undefined" ? require("leaflet") : null;
@@ -24,9 +25,9 @@ const { Option } = Select;
 
 const SelectLocationByAddress: React.FC<SelectLocationByAddressProps> = ({
   setCoordinates,
-  eraseAddress,
+  address,
+  setAddress,
 }) => {
-  const [address, setAddress] = useState<string>("");
   const [results, setResults] = useState<any[]>([]);
   const [geocoder, setGeocoder] = useState<L.Control.Geocoder | null>(null);
   const debounceTimer = useRef<number | null>(null);
@@ -37,12 +38,6 @@ const SelectLocationByAddress: React.FC<SelectLocationByAddressProps> = ({
       setGeocoder(geocoderInstance);
     }
   }, []);
-
-  useEffect(() => {
-    if (eraseAddress) {
-      setAddress("");
-    }
-  }, [eraseAddress]);
 
   const handleSearch = (searchAddress: string) => {
     if (!searchAddress || !geocoder) return;

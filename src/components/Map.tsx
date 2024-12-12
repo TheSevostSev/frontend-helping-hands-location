@@ -20,6 +20,7 @@ interface HelpingHandsLocation {
   name: string;
   latitude: number | null;
   longitude: number | null;
+  address: string | null;
   tags: Tag[];
 }
 
@@ -155,9 +156,10 @@ const Map: React.FC<MapProps> = ({
               icon: helpinghandsLocationIcon(30),
             }).addTo(mapRef.current);
             marker.bindPopup(
-              `<b>Name: ${loc.name}</b><br>Tags: ${loc.tags
+              `<b>Name: </b> ${loc.name}<br><b>Tags:</b> ${loc.tags
                 .map((tag) => tag.name)
-                .join(", ")}`
+                .join(", ")}
+                <br> <b>Address: </b>${loc.address}`
             );
           }
         });

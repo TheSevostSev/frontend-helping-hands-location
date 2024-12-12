@@ -21,6 +21,8 @@ const Map = dynamic(() => import("../components/Map"), { ssr: false });
 export default function AddLocationModal() {
   const { data: session } = useSession();
 
+  const [address, setAddress] = useState<string>("");
+
   const { data: locationTags } = useQuery({
     queryFn: getListLocationTags,
     queryKey: ["location_tags"],
@@ -35,8 +37,6 @@ export default function AddLocationModal() {
     latitude: number | null;
     longitude: number | null;
   }>({ latitude: null, longitude: null });
-
-  const [eraseAddress, setEraseAddress] = useState(false);
 
   const addLocation = useLocationActionStore((state) => state.addLocation);
 
@@ -60,23 +60,22 @@ export default function AddLocationModal() {
     createLocation({
       name: form.getFieldValue("name"),
       tagIds,
+      address,
       latitude: coordinates.latitude,
       longitude: coordinates.longitude,
     });
-    setTagIds([]);
-    toggleAddLocation();
-    setCoordinates({ latitude: null, longitude: null });
-    setEraseAddress(true);
+    resetComponentValues();
   };
 
   const handleChange = (value: string | string[]) => {
     setTagIds(value);
   };
 
-  const handleCancel = () => {
+  const resetComponentValues = () => {
+    setTagIds([]);
     toggleAddLocation();
     setCoordinates({ latitude: null, longitude: null });
-    setEraseAddress(true);
+    setAddress("");
   };
 
   return (
@@ -84,7 +83,6 @@ export default function AddLocationModal() {
       title="Add Location"
       open={addLocation}
       onOk={handleOk}
-      onCancel={handleCancel}
       centered
       style={{ textAlign: "center", alignItems: "center" }}
     >
@@ -147,7 +145,8 @@ export default function AddLocationModal() {
           ]}
         >
           <SelectLocationByAddress
-            eraseAddress={eraseAddress}
+            address={address}
+            setAddress={setAddress}
             setCoordinates={setCoordinates}
           ></SelectLocationByAddress>
         </Form.Item>
