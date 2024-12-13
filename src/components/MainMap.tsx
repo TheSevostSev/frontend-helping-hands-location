@@ -19,7 +19,8 @@ const MainMap: React.FC = ({}) => {
       zoomControl={true}
       markUserLocation={true}
       helpingHandsLocations={helpingHandsLocations}
-    ></BaseMap>
+      style={{ width: "100%", height: "100vh" }}
+    />
   );
 };
 

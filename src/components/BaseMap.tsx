@@ -5,25 +5,6 @@ import L from "leaflet";
 import React from "react";
 import "leaflet/dist/leaflet.css";
 
-interface Coordinates {
-  latitude: number | null;
-  longitude: number | null;
-}
-
-interface Tag {
-  id: number;
-  name: string;
-}
-
-interface HelpingHandsLocation {
-  id: number;
-  name: string;
-  latitude: number | null;
-  longitude: number | null;
-  address: string | null;
-  tags: Tag[];
-}
-
 interface MapProps {
   markUserLocation?: boolean | null;
   searchedLocationByAddress?: Coordinates | null;
@@ -140,7 +121,7 @@ const BaseMap: React.FC<MapProps> = ({
       if (markUserLocation) {
         userMarkerRef.current = L.marker(
           [location.latitude, location.longitude],
-          { icon: myLocationIcon(30) }
+          { icon: myLocationIcon(50) }
         ).addTo(mapRef.current);
       }
 
@@ -161,7 +142,7 @@ const BaseMap: React.FC<MapProps> = ({
         helpingHandsLocations.forEach((loc) => {
           if (loc.latitude && loc.longitude && mapRef.current) {
             const marker = L.marker([loc.latitude, loc.longitude], {
-              icon: helpinghandsLocationIcon(30),
+              icon: helpinghandsLocationIcon(35),
             }).addTo(mapRef.current);
             marker.bindPopup(
               `<b>Name: </b> ${loc.name}<br><b>Tags:</b> ${loc.tags
@@ -173,10 +154,9 @@ const BaseMap: React.FC<MapProps> = ({
         });
       }
 
-      // Update icon size on zoom
       mapRef.current.on("zoomend", () => {
         const zoomLevel = mapRef.current ? mapRef.current.getZoom() : 13;
-        const iconSize = Math.max(20, zoomLevel * 2);
+        const iconSize = zoomLevel * 5;
 
         if (userMarkerRef.current) {
           userMarkerRef.current.setIcon(myLocationIcon(iconSize));
@@ -204,6 +184,7 @@ const BaseMap: React.FC<MapProps> = ({
     zoomControl,
     zoom,
     helpingHandsLocations,
+    helpingHandsLocations?.length,
   ]);
 
   if (!hasMounted) {

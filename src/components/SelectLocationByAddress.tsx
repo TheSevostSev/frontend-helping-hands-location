@@ -63,7 +63,7 @@ const SelectLocationByAddress: React.FC<SelectLocationByAddressProps> = ({
 
     debounceTimer.current = window.setTimeout(() => {
       handleSearch(searchAddress);
-    }, 300);
+    }, 500);
   };
 
   const handleSelect = (value: string, option: any) => {

@@ -19,3 +19,42 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.tag-button {
+  display: inline-block;
+  text-align: center;
+  color: black;
+  background-color: white !important;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tag-button.selected {
+  color: white;
+  background-color: #4abe87 !important;
+}
+
+.tag-button-dropdown {
+  display: block !important;
+  text-align: center;
+  color: black;
+  background-color: white !important;
+  margin: 4px 4px 4px 4px !important;
+}
+
+.tag-button-dropdown:hover {
+  color: #000000 !important;
+}
+
+.tag-button:hover {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  color: #000000 !important;
+}
+
+.tag-button-dropdown.selected {
+  color: white;
+  background-color: #4abe87 !important;
+}

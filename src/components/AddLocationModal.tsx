@@ -12,7 +12,7 @@ import SelectLocationByAddress from "@/components/SelectLocationByAddress";
 import { Typography, Select } from "antd";
 import { getListLocationTags } from "@/app/api/location-tag";
 import { createLocation } from "@/app/api/location";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const { Title } = Typography;
 
@@ -23,10 +23,24 @@ export default function AddLocationModal() {
 
   const [address, setAddress] = useState<string>("");
 
+  const queryClient = useQueryClient();
+
   const { data: locationTags } = useQuery({
     queryFn: getListLocationTags,
     queryKey: ["location_tags"],
     staleTime: 1000 * 60 * 5,
+  });
+
+  const mutation = useMutation({
+    mutationFn: (location: HelpingHandsLocationCreate) =>
+      createLocation(location),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["helpingHandsLocations"],
+      });
+      toast.success("Location created successfully");
+      resetComponentValues();
+    },
   });
 
   const [form] = Form.useForm();
@@ -57,14 +71,17 @@ export default function AddLocationModal() {
   }, [session?.authMessage, session?.tokenValue, setToken]);
 
   const handleOk = () => {
-    createLocation({
+    mutation.mutate({
       name: form.getFieldValue("name"),
       tagIds,
       address,
       latitude: coordinates.latitude,
       longitude: coordinates.longitude,
     });
-    resetComponentValues();
+  };
+
+  const handleCancel = () => {
+    toggleAddLocation();
   };
 
   const handleChange = (value: string | string[]) => {
@@ -83,6 +100,7 @@ export default function AddLocationModal() {
       title="Add Location"
       open={addLocation}
       onOk={handleOk}
+      onCancel={handleCancel}
       centered
       style={{ textAlign: "center", alignItems: "center" }}
     >
