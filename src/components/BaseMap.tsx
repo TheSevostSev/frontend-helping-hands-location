@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import L from "leaflet";
 import React from "react";
+import useTokenStore from "@/stores/useTokenStore";
 import "leaflet/dist/leaflet.css";
 
 interface MapProps {
@@ -27,6 +28,8 @@ const BaseMap: React.FC<MapProps> = ({
     longitude: number;
   } | null>(null);
   const [hasMounted, setHasMounted] = useState(false);
+
+  const token = useTokenStore((state) => state.token);
 
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -185,6 +188,7 @@ const BaseMap: React.FC<MapProps> = ({
     zoom,
     helpingHandsLocations,
     helpingHandsLocations?.length,
+    token,
   ]);
 
   if (!hasMounted) {

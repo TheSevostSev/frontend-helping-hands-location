@@ -9,22 +9,11 @@ import {
   LogoutOutlined,
   EnvironmentOutlined,
 } from "@ant-design/icons";
-import {
-  Button,
-  Layout,
-  Menu,
-  theme,
-  Popconfirm,
-  Tag,
-  Flex,
-  Dropdown,
-} from "antd";
+import { Button, Layout, Menu, theme, Popconfirm } from "antd";
 import { useRouter } from "next/navigation";
 import "react-toastify/dist/ReactToastify.css";
 import useTokenStore from "@/stores/useTokenStore";
 import useLocationActionStore from "@/stores/useLocationActionStore";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getListLocationTags } from "@/app/api/location-tag";
 
 const { Sider, Content } = Layout;
 
@@ -39,19 +28,7 @@ export default function MainLayout({
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const queryClient = useQueryClient();
-
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
-
-  const sizeOfPrimaryTags = 5;
-
   const router = useRouter();
-
-  const { data: locationTags } = useQuery({
-    queryFn: getListLocationTags,
-    queryKey: ["location_tags"],
-    staleTime: 0,
-  });
 
   const handleLoginClick = () => {
     router.push("/login");
@@ -75,15 +52,6 @@ export default function MainLayout({
   useEffect(() => {
     setIsHydrated(true);
   }, []);
-
-  const handleChange = (tag: Tag, checked: boolean) => {
-    console.log("Tag", tag, "Checked", checked);
-    const nextSelectedTags = checked
-      ? [...selectedTags, tag]
-      : selectedTags.filter((t) => t !== tag);
-    setSelectedTags(nextSelectedTags);
-    queryClient.refetchQueries();
-  };
 
   return (
     <Layout
@@ -163,67 +131,8 @@ export default function MainLayout({
                 zIndex: 1000,
               }}
             >
-              Presentarme como voluntario
+              Iniciar sesión / Registrarse
             </Button>
-
-            <Flex
-              gap={4}
-              wrap
-              style={{
-                position: "absolute",
-                top: 20,
-                zIndex: 1000,
-              }}
-            >
-              {locationTags?.map((tag: Tag, index: number) => {
-                if (index < sizeOfPrimaryTags) {
-                  return (
-                    <Tag.CheckableTag
-                      key={tag.id}
-                      checked={selectedTags.includes(tag)}
-                      onChange={(checked) => handleChange(tag, checked)}
-                      className={`tag-button ${
-                        selectedTags.includes(tag) ? "selected" : ""
-                      }`}
-                    >
-                      {tag.name}
-                    </Tag.CheckableTag>
-                  );
-                } else if (index === sizeOfPrimaryTags) {
-                  return (
-                    <Dropdown
-                      key="more-tags-dropdown"
-                      overlay={
-                        <div>
-                          {locationTags
-                            .slice(index)
-                            .map((remainingTag: Tag) => (
-                              <Tag.CheckableTag
-                                key={remainingTag.id}
-                                checked={selectedTags.includes(remainingTag)}
-                                onChange={(checked) =>
-                                  handleChange(remainingTag, checked)
-                                }
-                                className={`tag-button-dropdown ${
-                                  selectedTags.includes(remainingTag)
-                                    ? "selected"
-                                    : ""
-                                }`}
-                              >
-                                {remainingTag.name}
-                              </Tag.CheckableTag>
-                            ))}
-                        </div>
-                      }
-                    >
-                      <a onClick={(e) => e.preventDefault()}>
-                        <Tag className={`tag-button`}>Ver mas</Tag>
-                      </a>
-                    </Dropdown>
-                  );
-                }
-              })}
-            </Flex>
           </>
         )
       ) : null}
