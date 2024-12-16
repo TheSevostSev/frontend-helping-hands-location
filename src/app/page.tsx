@@ -25,7 +25,7 @@ export default function Home() {
       setToken(session?.tokenValue, true);
     }
     signOut({ redirect: false });
-  }, []);
+  }, [session?.authErrorMessage]);
 
   return (
     <MainLayout>
