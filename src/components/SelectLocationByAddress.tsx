@@ -43,7 +43,7 @@ const SelectLocationByAddress: React.FC<SelectLocationByAddressProps> = ({
     if (!searchAddress || !geocoder) return;
 
     const timeout = setTimeout(() => {
-      console.warn("Geocoding request timed out");
+      console.warn("Geocoder timeout");
     }, 5000);
 
     geocoder.geocode(searchAddress, (results: any[]) => {
@@ -77,7 +77,7 @@ const SelectLocationByAddress: React.FC<SelectLocationByAddressProps> = ({
     <div>
       <Select
         showSearch
-        placeholder="Select an address"
+        placeholder="Selecciona una ubicacion"
         value={address}
         onClick={() => debounceSearch("")}
         onSearch={(value) => debounceSearch(value)}

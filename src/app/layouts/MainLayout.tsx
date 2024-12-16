@@ -81,7 +81,7 @@ export default function MainLayout({
                   zIndex: 1000,
                 }}
               >
-                Logout
+                Cerrar Sesion
               </Button>
             </Popconfirm>
             <Sider
@@ -111,7 +111,7 @@ export default function MainLayout({
                   {
                     key: "add-location",
                     icon: <EnvironmentOutlined />,
-                    label: "Add location",
+                    label: "Añadir Ubicación",
                     onClick: handleAddLocationClick,
                   },
                 ]}

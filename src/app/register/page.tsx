@@ -73,7 +73,7 @@ const RegisterPage: React.FC = () => {
       })
       .catch((error) => {
         const errorMessage =
-          error instanceof Error ? error.message : "An unknown error occurred";
+          error instanceof Error ? error.message : "Ha ocurrido un error";
         toast.error(errorMessage);
       });
   };
@@ -100,9 +100,9 @@ const RegisterPage: React.FC = () => {
             Authentification information
           </Divider>
           <Form.Item<UserRegisterType>
-            label="Username"
+            label="Usuario"
             name="username"
-            rules={[{ required: true, message: "Please input your username!" }]}
+            rules={[{ required: true, message: "Porfavor ingresa tu nombre de usuario" }]}
           >
             <Input
               onChange={(e) =>
@@ -120,9 +120,9 @@ const RegisterPage: React.FC = () => {
           </Form.Item>
 
           <Form.Item<UserRegisterType>
-            label="Password"
+            label="Contraseña"
             name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
+            rules={[{ required: true, message: "Porfavor ingresa tu contraseña" }]}
           >
             <Input.Password
               onChange={(e) =>
@@ -140,14 +140,14 @@ const RegisterPage: React.FC = () => {
           </Form.Item>
 
           <Divider style={{ borderColor: "#000000", padding: "5px 5px" }}>
-            Personal information
+            Informacion Personal
           </Divider>
 
           <Form.Item<UserRegisterType>
-            label="First Name"
+            label="Nombre"
             name="firstName"
             rules={[
-              { required: true, message: "Please input your First Name!" },
+              { required: true, message: "Porfavor ingresa tu nombre" },
             ]}
           >
             <Input
@@ -165,7 +165,7 @@ const RegisterPage: React.FC = () => {
             />
           </Form.Item>
 
-          <Form.Item label="Last Name" name="lastName">
+          <Form.Item label="Apellido" name="lastName">
             <Input
               onChange={(e) =>
                 setUserWithPredifinedDataPosition(
@@ -182,7 +182,7 @@ const RegisterPage: React.FC = () => {
           </Form.Item>
 
           <Form.Item<UserRegisterType>
-            label="Type"
+            label="Tipo de usuario"
             name="typeId"
             rules={[
               { required: true, message: "Por favor pon tu tipo de usuario!" },
@@ -219,7 +219,7 @@ const RegisterPage: React.FC = () => {
           <Form.Item<UserRegisterType>
             label="Email"
             name="email"
-            rules={[{ required: true, message: "Please input your email!" }]}
+            rules={[{ required: true, message: "Porfavor ingresa tu email" }]}
           >
             <Input
               onChange={(e) =>
@@ -236,7 +236,7 @@ const RegisterPage: React.FC = () => {
             />
           </Form.Item>
 
-          <Form.Item label="Phone number" name="phoneNumber">
+          <Form.Item label="Telefono" name="phoneNumber">
             <Input
               onChange={(e) =>
                 setUserWithPredifinedDataPosition(

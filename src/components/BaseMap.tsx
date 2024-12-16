@@ -148,10 +148,10 @@ const BaseMap: React.FC<MapProps> = ({
               icon: helpinghandsLocationIcon(35),
             }).addTo(mapRef.current);
             marker.bindPopup(
-              `<b>Name: </b> ${loc.name}<br><b>Tags:</b> ${loc.tags
+              `<b>Nombre: </b> ${loc.name}<br><b>Etiquetas:</b> ${loc.tags
                 .map((tag) => tag.name)
                 .join(", ")}
-                <br> <b>Address: </b>${loc.address}`
+                <br> <b>Dirección: </b>${loc.address}`
             );
           }
         });

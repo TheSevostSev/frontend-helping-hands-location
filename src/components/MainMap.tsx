@@ -44,6 +44,7 @@ const MainMap: React.FC = ({}) => {
         style={{
           position: "absolute",
           top: 20,
+          transform: "translateX(20px)",
           zIndex: 1000,
         }}
       >

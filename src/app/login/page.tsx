@@ -43,7 +43,7 @@ const LoginPage: React.FC = () => {
       })
       .catch((error) => {
         const errorMessage =
-          error instanceof Error ? error.message : "An unknown error occurred";
+          error instanceof Error ? error.message : "Ha ocurrido un error";
         toast.error(errorMessage);
       });
   };
@@ -71,9 +71,9 @@ const LoginPage: React.FC = () => {
           autoComplete="off"
         >
           <Form.Item<UserLoginType>
-            label="Username"
+            label="Usuario"
             name="username"
-            rules={[{ required: true, message: "Please input your username!" }]}
+            rules={[{ required: true, message: "Porfavor ingresa tu nombre de usuario" }]}
           >
             <Input
               onChange={(e) =>
@@ -87,9 +87,9 @@ const LoginPage: React.FC = () => {
           </Form.Item>
 
           <Form.Item<UserLoginType>
-            label="Password"
+            label="Contraseña"
             name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
+            rules={[{ required: true, message: "Porfavor ingresa una contraseña" }]}
           >
             <Input.Password
               onChange={(e) =>
@@ -116,7 +116,7 @@ const LoginPage: React.FC = () => {
                 )
               }
             >
-              Remember me
+              Recuerdame
             </Checkbox>
           </Form.Item>
 
@@ -170,7 +170,7 @@ const LoginPage: React.FC = () => {
               }
               size="large"
             >
-              Continue with Google
+              Continuar con Google
             </Button>
           </div>
         </Form>

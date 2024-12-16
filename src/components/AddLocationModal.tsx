@@ -38,7 +38,7 @@ export default function AddLocationModal() {
       await queryClient.invalidateQueries({
         queryKey: ["helpingHandsLocations"],
       });
-      toast.success("Location created successfully");
+      toast.success("Ubicación creada con exito");
       resetComponentValues();
     },
   });
@@ -97,7 +97,7 @@ export default function AddLocationModal() {
 
   return (
     <Modal
-      title="Add Location"
+      title="Añadir Ubicación"
       open={addLocation}
       onOk={handleOk}
       onCancel={handleCancel}
@@ -114,30 +114,30 @@ export default function AddLocationModal() {
         form={form}
       >
         <Form.Item
-          label="Title"
+          label="Titulo"
           name="name"
           rules={[
             {
               required: true,
-              message: "Please input the title of the location!",
+              message: "Porfavor ingresa un titulo a la ubicación",
             },
           ]}
         >
           <Input />
         </Form.Item>
         <Form.Item
-          label="Tags"
+          label="Etiquetas"
           name="tags"
           rules={[
             {
               required: true,
-              message: "Please select tags for your location!",
+              message: "Porfavor ingresa una etiqueta a la ubicación",
             },
           ]}
         >
           <Select
             mode="multiple"
-            placeholder="Please select"
+            placeholder="Seleccione porfavor"
             style={{ width: "100%" }}
             fieldNames={{ value: "id", label: "name" }}
             options={locationTags}
@@ -153,12 +153,12 @@ export default function AddLocationModal() {
           />
         </Form.Item>
         <Form.Item
-          label="Address"
+          label="Direccion"
           name="address"
           rules={[
             {
               required: true,
-              message: "Please select address!",
+              message: "Porfavor ingresa una direccion",
             },
           ]}
         >
@@ -170,7 +170,7 @@ export default function AddLocationModal() {
         </Form.Item>
 
         <Title level={5} style={{ fontWeight: "normal" }}>
-          Location preview
+          Previsulizar Ubicacion
         </Title>
 
         <div
