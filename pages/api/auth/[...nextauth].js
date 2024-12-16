@@ -26,8 +26,8 @@ export default NextAuth({
     },
     // Session callback
     async session({ session, token }) {
-      session.tokenValue = token.value || null; // Use null if value is undefined
-      session.authMessage = token.authMessage || "No message available"; // Provide a default message
+      session.tokenValue = token.value || null;
+      session.authMessage = token?.authMessage;
       return session;
     },
     // Redirect callback
