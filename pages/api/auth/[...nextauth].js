@@ -19,7 +19,7 @@ export default NextAuth({
           token.authMessage = "Login is successful!";
         } catch (error) {
           token.value = null;
-          token.authMessage = `Error occurred during login: ${error.message}`;
+          token.authErrorMessage = `Error occurred during login: ${error.message}`;
         }
       }
       return token;

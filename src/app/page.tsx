@@ -18,11 +18,14 @@ export default function Home() {
     if (session?.authMessage) {
       toast.success(session?.authMessage);
     }
+    if (session?.authErrorMessage) {
+      toast.error(session?.authErrorMessage);
+    }
     if (session?.tokenValue) {
       setToken(session?.tokenValue, true);
     }
     signOut({ redirect: false });
-  }, [session?.authMessage, session?.tokenValue, setToken]);
+  }, []);
 
   return (
     <MainLayout>
