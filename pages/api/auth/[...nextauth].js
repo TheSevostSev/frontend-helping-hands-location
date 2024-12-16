@@ -19,15 +19,15 @@ export default NextAuth({
           token.authMessage = "Login is successful!";
         } catch (error) {
           token.value = null;
-          token.authMessage = `Error occurred during login: ${error.message}`;
+          token.authErrorMessage = `Error occurred during login: ${error.message}`;
         }
       }
       return token;
     },
     // Session callback
     async session({ session, token }) {
-      session.tokenValue = token.value || null; // Use null if value is undefined
-      session.authMessage = token.authMessage || "No message available"; // Provide a default message
+      session.tokenValue = token.value || null;
+      session.authMessage = token?.authMessage;
       return session;
     },
     // Redirect callback
