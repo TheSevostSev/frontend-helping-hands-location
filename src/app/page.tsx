@@ -8,6 +8,8 @@ import useTokenStore from "@/stores/useTokenStore";
 import MainLayout from "./layouts/MainLayout";
 import MainMap from "@/components/MainMap";
 import AddLocationModal from "@/components/AddLocationModal";
+import AboutUsModal from "@/components/AboutUsModal";
+import AppGuideModal from "@/components/AppGuideModal";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -33,6 +35,8 @@ export default function Home() {
         <MainMap></MainMap>
       </div>
       <AddLocationModal></AddLocationModal>
+      <AboutUsModal></AboutUsModal>
+      <AppGuideModal></AppGuideModal>
     </MainLayout>
   );
 }
