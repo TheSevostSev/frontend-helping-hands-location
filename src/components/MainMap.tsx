@@ -53,8 +53,7 @@ const MainMap: React.FC = ({}) => {
           gap: "10px",
           position: "absolute",
           top: "20px",
-          left: "20px",
-          right: "20px",
+          transform: "translateX(42px)",
           zIndex: 1000,
         }}
       >
