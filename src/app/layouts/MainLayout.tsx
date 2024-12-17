@@ -128,7 +128,7 @@ export default function MainLayout({
                 position: "absolute",
                 top: "20px",
                 right: "20px",
-                zIndex: 1000,
+                zIndex: 1001,
               }}
             >
               Iniciar sesión / Registrarse

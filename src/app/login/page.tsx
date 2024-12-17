@@ -73,7 +73,12 @@ const LoginPage: React.FC = () => {
           <Form.Item<UserLoginType>
             label="Usuario"
             name="username"
-            rules={[{ required: true, message: "Porfavor ingresa tu nombre de usuario" }]}
+            rules={[
+              {
+                required: true,
+                message: "Porfavor ingresa tu nombre de usuario",
+              },
+            ]}
           >
             <Input
               onChange={(e) =>
@@ -89,7 +94,9 @@ const LoginPage: React.FC = () => {
           <Form.Item<UserLoginType>
             label="Contraseña"
             name="password"
-            rules={[{ required: true, message: "Porfavor ingresa una contraseña" }]}
+            rules={[
+              { required: true, message: "Porfavor ingresa una contraseña" },
+            ]}
           >
             <Input.Password
               onChange={(e) =>
@@ -165,6 +172,7 @@ const LoginPage: React.FC = () => {
                 <Image
                   src="/icons/google-logo.png"
                   alt="Location"
+                  preview={false}
                   style={{ width: 30, height: 30 }}
                 />
               }

@@ -4,9 +4,11 @@ import dynamic from "next/dynamic";
 import { useQuery } from "@tanstack/react-query";
 import "leaflet/dist/leaflet.css";
 import { getListLocations } from "@/app/api/location";
-import { Tag, Flex, Dropdown } from "antd";
+import { Tag, Dropdown, Button } from "antd";
 import { getListLocationTags } from "@/app/api/location-tag";
 import { useState } from "react";
+import useAboutUsStore from "@/stores/useAboutUsStore";
+import useAppGuideStore from "@/stores/useAppGuideStore";
 
 const BaseMap = dynamic(() => import("./BaseMap"), { ssr: false });
 
@@ -20,6 +22,11 @@ const MainMap: React.FC = ({}) => {
     queryKey: ["helpingHandsLocations", selectedLocationTagIds],
     staleTime: 1000 * 60 * 5,
   });
+
+  const toggleAboutUsShow = useAboutUsStore((state) => state.toggleAboutUsShow);
+  const toggleAppGuideShow = useAppGuideStore(
+    (state) => state.toggleAppGuideShow
+  );
 
   const sizeOfPrimaryTags = 5;
 
@@ -38,13 +45,15 @@ const MainMap: React.FC = ({}) => {
 
   return (
     <>
-      <Flex
-        gap={4}
-        wrap
+      <div
         style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          gap: "10px",
           position: "absolute",
-          top: 20,
-          transform: "translateX(20px)",
+          top: "20px",
+          transform: "translateX(42px)",
           zIndex: 1000,
         }}
       >
@@ -102,14 +111,29 @@ const MainMap: React.FC = ({}) => {
                         : ""
                     }`}
                   >
-                    Ver mas
+                    Ver más
                   </Tag>
                 </a>
               </Dropdown>
             );
           }
         })}
-      </Flex>
+        <Button
+          type="primary"
+          onClick={toggleAppGuideShow}
+          style={{ marginLeft: "160px" }}
+        >
+          Guía
+        </Button>
+        <Button
+          type="primary"
+          onClick={toggleAboutUsShow}
+          style={{ marginLeft: "10px" }}
+        >
+          Sobre nosotros
+        </Button>
+      </div>
+
       <BaseMap
         zoomControl={true}
         markUserLocation={true}

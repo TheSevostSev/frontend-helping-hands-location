@@ -26,7 +26,7 @@ export default NextAuth({
     },
     // Session callback
     async session({ session, token }) {
-      session.tokenValue = token.value;
+      session.tokenValue = token.value || null;
       session.authMessage = token.authMessage;
       session.authErrorMessage = token.authErrorMessage;
       return session;
