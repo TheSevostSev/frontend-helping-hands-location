@@ -134,7 +134,7 @@ const LoginPage: React.FC = () => {
                 size="middle"
                 style={{ padding: "5px 15px" }}
               >
-                Cancel
+                Cancelar
               </Button>
               <Button
                 type="primary"
@@ -142,13 +142,13 @@ const LoginPage: React.FC = () => {
                 style={{ padding: "5px 15px" }}
                 onClick={handleLoginClick}
               >
-                Loggear
+                ACCEDER
               </Button>
             </div>
           </Form.Item>
 
           <Divider style={{ borderColor: "#000000", padding: "10px 10px" }}>
-            OR
+            O
           </Divider>
 
           <div
