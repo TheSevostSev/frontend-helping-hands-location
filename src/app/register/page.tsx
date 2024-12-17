@@ -97,7 +97,7 @@ const RegisterPage: React.FC = () => {
           autoComplete="off"
         >
           <Divider style={{ borderColor: "#000000", padding: "5px 5px" }}>
-            Authentification information
+            Información de autentificación
           </Divider>
           <Form.Item<UserRegisterType>
             label="Usuario"
@@ -140,7 +140,7 @@ const RegisterPage: React.FC = () => {
           </Form.Item>
 
           <Divider style={{ borderColor: "#000000", padding: "5px 5px" }}>
-            Informacion Personal
+            Información Personal
           </Divider>
 
           <Form.Item<UserRegisterType>
@@ -182,7 +182,7 @@ const RegisterPage: React.FC = () => {
           </Form.Item>
 
           <Form.Item<UserRegisterType>
-            label="Tipo de usuario"
+            label="Tipo usuario"
             name="typeId"
             rules={[
               { required: true, message: "Por favor pon tu tipo de usuario!" },
@@ -213,8 +213,7 @@ const RegisterPage: React.FC = () => {
           </Form.Item>
 
           <Divider style={{ borderColor: "#000000", padding: "5px 5px" }}>
-            Contact information
-          </Divider>
+Información de contacto          </Divider>
 
           <Form.Item<UserRegisterType>
             label="Email"
@@ -267,7 +266,7 @@ const RegisterPage: React.FC = () => {
                 size="middle"
                 style={{ padding: "5px 15px" }}
               >
-                Cancel
+                Cancelar
               </Button>
               <Button
                 onClick={handleRegisterClick}

@@ -10,11 +10,11 @@ const { Content } = Layout;
 const tabList = [
   {
     key: "/login",
-    tab: "Login",
+    tab: "Iniciar sesión",
   },
   {
     key: "/register",
-    tab: "Register",
+    tab: "Registrarse",
   },
 ];
 

@@ -81,7 +81,7 @@ export default function MainLayout({
                   zIndex: 1000,
                 }}
               >
-                Cerrar Sesion
+                Cerrar Sesión
               </Button>
             </Popconfirm>
             <Sider

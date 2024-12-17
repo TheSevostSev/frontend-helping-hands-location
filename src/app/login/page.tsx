@@ -38,7 +38,7 @@ const LoginPage: React.FC = () => {
     basicLogin(user)
       .then((data) => {
         setToken(data.token, user?.remember ? false : true);
-        toast.success("Se ha iniciado la session correctamente!");
+        toast.success("Se ha iniciado la sesión correctamente!");
         router.push("/");
       })
       .catch((error) => {
