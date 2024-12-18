@@ -10,7 +10,6 @@ export const createLocation = async (location) => {
 };
 
 export const getListLocations = async (locationTagIds) => {
-  console.log("Location tags", locationTagIds);
   try {
     const response = await backendURL.get(`locations?tagIds=${locationTagIds}`);
     return response.data;
