@@ -59,7 +59,7 @@ const LoginPage: React.FC = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "70vh",
+          minHeight: "500px",
         }}
       >
         <Form
