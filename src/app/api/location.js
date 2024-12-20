@@ -9,6 +9,15 @@ export const createLocation = async (location) => {
   }
 };
 
+export const deleteLocation = async (locationId) => {
+  try {
+    const response = await backendURL.delete(`locations/${locationId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getListLocations = async (locationTagIds) => {
   try {
     const response = await backendURL.get(`locations?tagIds=${locationTagIds}`);

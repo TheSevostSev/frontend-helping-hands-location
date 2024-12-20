@@ -13,6 +13,7 @@ declare global {
   }
 
   interface HelpingHandsLocation {
+    creatorId: any;
     id: number;
     name: string;
     latitude: number | null;
