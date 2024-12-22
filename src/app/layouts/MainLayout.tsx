@@ -13,7 +13,7 @@ import { Button, Layout, Menu, theme, Popconfirm } from "antd";
 import { useRouter } from "next/navigation";
 import "react-toastify/dist/ReactToastify.css";
 import useTokenStore from "@/stores/useTokenStore";
-import useLocationActionStore from "@/stores/useLocationActionStore";
+import useLocationActionStore from "@/stores/useLocationPopupStore";
 
 const { Sider, Content } = Layout;
 
@@ -39,14 +39,14 @@ export default function MainLayout({
   };
 
   const handleAddLocationClick = () => {
-    toggleAddLocation();
+    toggleShowPopup();
   };
 
   const token = useTokenStore((state) => state.token);
   const removeToken = useTokenStore((state) => state.removeToken);
 
-  const toggleAddLocation = useLocationActionStore(
-    (state) => state.toggleAddLocation
+  const toggleShowPopup = useLocationActionStore(
+    (state) => state.toggleShowPopup
   );
 
   useEffect(() => {

@@ -6,15 +6,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Select } from "antd";
 
-interface Coordinates {
-  latitude: number | null;
-  longitude: number | null;
-}
-
 interface SelectLocationByAddressProps {
-  setCoordinates: React.Dispatch<React.SetStateAction<Coordinates>>;
-  setAddress: React.Dispatch<React.SetStateAction<string>>;
-  address: string;
+  setLocation: (location: HelpingHandsLocationForm) => void;
+  location: HelpingHandsLocationForm;
 }
 
 const L = typeof window !== "undefined" ? require("leaflet") : null;
@@ -24,9 +18,8 @@ const Geocoder =
 const { Option } = Select;
 
 const SelectLocationByAddress: React.FC<SelectLocationByAddressProps> = ({
-  setCoordinates,
-  address,
-  setAddress,
+  location,
+  setLocation,
 }) => {
   const [results, setResults] = useState<any[]>([]);
   const [geocoder, setGeocoder] = useState<L.Control.Geocoder | null>(null);
@@ -68,8 +61,12 @@ const SelectLocationByAddress: React.FC<SelectLocationByAddressProps> = ({
 
   const handleSelect = (value: string, option: any) => {
     const { lat, lng } = option.data.center;
-    setCoordinates({ latitude: lat, longitude: lng });
-    setAddress(option.data.name);
+    setLocation({
+      ...location,
+      latitude: lat,
+      longitude: lng,
+      address: option.data.name,
+    });
     setResults([]);
   };
 
@@ -78,7 +75,7 @@ const SelectLocationByAddress: React.FC<SelectLocationByAddressProps> = ({
       <Select
         showSearch
         placeholder="Selecciona una ubicacion"
-        value={address}
+        value={location?.address}
         onClick={() => debounceSearch("")}
         onSearch={(value) => debounceSearch(value)}
         onSelect={handleSelect}
