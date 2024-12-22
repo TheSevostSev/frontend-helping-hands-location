@@ -11,6 +11,7 @@ import ReactDOM from "react-dom";
 import { toast } from "react-toastify";
 import { deleteLocation } from "@/app/api/location";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useLocationPopupStore from "@/stores/useLocationPopupStore";
 
 interface MapProps {
   markUserLocation?: boolean | null;
@@ -40,6 +41,13 @@ const BaseMap: React.FC<MapProps> = ({
   const [hasMounted, setHasMounted] = useState(false);
 
   const token = useTokenStore((state) => state.token);
+  const toggleLocationShowPopup = useLocationPopupStore(
+    (store) => store.toggleShowPopup
+  );
+
+  const setLocationFromStore = useLocationPopupStore(
+    (store) => store.setLocation
+  );
 
   const [user, setUser] = useState<User>({ id: 0 });
 
@@ -196,16 +204,36 @@ const BaseMap: React.FC<MapProps> = ({
                   <b>Dirección:</b> {loc.address}
                 </div>
                 {user.id == loc.creatorId ? (
-                  <Button
-                    variant="solid"
-                    color="danger"
-                    onClick={() => {
-                      mutation.mutate(loc.id);
-                      marker.closePopup();
+                  <div
+                    style={{
+                      marginTop: "10px",
+                      display: "flex",
+                      justifyContent: "space-evenly",
                     }}
                   >
-                    Eliminar
-                  </Button>
+                    <Button
+                      variant="solid"
+                      color="danger"
+                      onClick={() => {
+                        setLocationFromStore(loc);
+                        toggleLocationShowPopup();
+                      }}
+                    >
+                      Editar
+                    </Button>
+                    <Button
+                      variant="solid"
+                      color="danger"
+                      onClick={() => {
+                        if (loc.id) {
+                          mutation.mutate(loc.id);
+                        }
+                        marker.closePopup();
+                      }}
+                    >
+                      Eliminar
+                    </Button>
+                  </div>
                 ) : null}
               </>,
               popupContent
@@ -230,7 +258,6 @@ const BaseMap: React.FC<MapProps> = ({
         }
       });
 
-      // Cleanup function
       return () => {
         if (mapRef.current) {
           mapRef.current.remove();

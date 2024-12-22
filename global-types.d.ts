@@ -1,10 +1,10 @@
 declare global {
-  interface HelpingHandsLocationCreate {
-    name: string;
+  interface HelpingHandsLocationForm {
+    name: string | null;
     latitude: number | null;
     longitude: number | null;
     address: string | null;
-    tagIds: string[] | string;
+    tagIds: number[] | number;
   }
 
   interface Coordinates {
@@ -13,9 +13,9 @@ declare global {
   }
 
   interface HelpingHandsLocation {
-    creatorId: any;
-    id: number;
-    name: string;
+    creatorId: number | null;
+    id: number | null;
+    name: string | null;
     latitude: number | null;
     longitude: number | null;
     address: string | null;
